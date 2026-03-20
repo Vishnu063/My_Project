@@ -1,0 +1,4 @@
+# Copy this file to terraform.tfvars and update values
+project_name = "devops-cicd"
+environment  = "dev"
+key_name     = "your-key-pair-name"

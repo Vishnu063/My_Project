@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "80:3000"
+    environment:
+      - USER_SERVICE_URL=http://user-service:8000
+      - PRODUCT_SERVICE_URL=http://product-service:8080
+      - NODE_ENV=production
+    depends_on:
+      - user-service
+      - product-service
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  user-service:
+    build: ./user-service
+    ports:
+      - "8001:8000"
+    environment:
+      - DYNAMODB_T
+# Make sure you're in the app directory
+cd ~/devops-cicd-project/devops-cicd-project/app
+
+# Create the complete docker-compose.yml file
+cat > docker-compose.yml << 'EOF'
+version: '3.8'
+
+services:
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "80:3000"
+    environment:
+      - USER_SERVICE_URL=http://user-service:8000
+      - PRODUCT_SERVICE_URL=http://product-service:8080
+      - NODE_ENV=production
+    depends_on:
+      - user-service
+      - product-service
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  user-service:
+    build: ./user-service
+    ports:
+      - "8001:8000"
+    environment:
+      - DYNAMODB_TABLE=users
+      - AWS_REGION=us-east-1
+    depends_on:
+      - product-service
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  product-service:
+    build: ./product-service
+    ports:
+      - "8081:8080"
+    environment:
+      - DYNAMODB_TABLE=products
+      - AWS_REGION=us-east-1
+      - PORT=8080
+    restart: unless-stopped
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
