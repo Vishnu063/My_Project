@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps Pipeline - User Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .navbar {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            font-size: 2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 30px;
+            margin-bottom: 3rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .health-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .health-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 50px;
+            margin-bottom: 1rem;
+        }
+
+        .health-badge {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #4ade80;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .health-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            margin-top: 1rem;
+        }
+
+        .health-button:hover {
+            transform: scale(1.05);
+        }
+
+        .user-section {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .user-form {
+            background: rgba(255,255,255,0.1);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            background: rgba(255,255,255,0.9);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: scale(1.02);
+        }
+
+        .users-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .user-card {
+            background: rgba(255,255,255,0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+
+        .user-card:hover {
+            transform: translateX(5px);
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .user-email {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .user-id {
+            font-size: 0.75rem;
+            opacity: 0.6;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        .alert.success {
+            background: rgba(74, 222, 128, 0.2);
+            border-left: 4px solid #4ade80;
+        }
+
+        .alert.error {
+            background: rgba(239, 68, 68, 0.2);
+            border-left: 4px solid #ef4444;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .nav-links { gap: 1rem; }
+            .user-card { flex-direction: column; text-align: center; gap: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <span>DevOps Pipeline</span>
+            </div>
+            <div class="nav-links">
+                <a href="#home"><i class="fas fa-home"></i> Home</a>
+                <a href="#health"><i class="fas fa-heartbeat"></i> Health</a>
+                <a href="#users"><i class="fas fa-users"></i> Users</a>
+                <a href="#secret"><i class="fas fa-music"></i> Secret</a>
+                <a href="https://github.com/Vishnu063/My_Project" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero" id="home">
+            <h1>🚀 User Management System</h1>
+            <p>Powered by Terraform | AWS | Docker | GitHub Actions</p>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-database"></i></div>
+                    <div class="stat-value" id="totalUsers">0</div>
+                    <div class="stat-label">Total Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-server"></i></div>
+                    <div class="stat-value">ap-south-1</div>
+                    <div class="stat-label">AWS Region</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-docker"></i></div>
+                    <div class="stat-value">2</div>
+                    <div class="stat-label">Active Services</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Health Check Section -->
+        <div class="health-card" id="health">
+            <div class="health-status">
+                <div class="health-badge"></div>
+                <span>API Status: <strong id="apiStatus">Checking...</strong></span>
+            </div>
+            <h2><i class="fas fa-heartbeat"></i> System Health Check</h2>
+            <p>Verify that all services are running properly</p>
+            <button class="health-button" onclick="checkHealth()">
+                <i class="fas fa-stethoscope"></i> Run Health Check
+            </button>
+            <div id="healthResult" style="margin-top: 1rem;"></div>
+        </div>
+
+        <!-- User Management Section -->
+        <div class="user-section" id="users">
+            <div class="section-title">
+                <i class="fas fa-user-plus"></i>
+                <h2>Create New User</h2>
+            </div>
+            <div id="alert" class="alert"></div>
+            <div class="user-form">
+                <div class="form-group">
+                    <input type="text" id="userName" placeholder="Full Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="userEmail" placeholder="Email Address" required>
+                </div>
+                <button class="btn" onclick="createUser()">
+                    <i class="fas fa-plus-circle"></i> Create User
+                </button>
+            </div>
+
+            <div class="section-title">
+                <i class="fas fa-users"></i>
+                <h2>User Directory</h2>
+                <span class="stat-label" id="userCountBadge" style="margin-left: 0.5rem;"></span>
+            </div>
+            <div id="usersList" class="users-list">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading users...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🎵 Secret Easter Egg Section -->
+        <div class="user-section" id="secret">
+            <div class="section-title">
+                <i class="fas fa-music"></i>
+                <h2>🎵 Secret Song</h2>
+                <span class="stat-label" style="font-size:0.8rem;">Enter the secret code</span>
+            </div>
+            <div class="user-form" style="text-align: center;">
+                <div class="form-group">
+                    <input type="password" id="secretCode" placeholder="Enter secret code" style="text-align: center; font-family: monospace;">
+                </div>
+                <button class="btn" onclick="unlockSong()">
+                    <i class="fas fa-key"></i> Unlock Song
+                </button>
+                <div id="songPlayer" style="margin-top: 20px; display: none;">
+                    <div style="background: rgba(0,0,0,0.5); border-radius: 12px; overflow: hidden;">
+                        <iframe id="videoFrame" width="100%" height="315" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <p style="margin-top: 10px; font-size: 0.9rem;">🎶 Enjoy the song! 🎶</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Built with <i class="fas fa-heart" style="color: #ff6b6b;"></i> by Vishnu | DevOps Engineer</p>
+            <p>© 2026 - Automated CI/CD Pipeline with Terraform on AWS</p>
+        </div>
+    </div>
+
+    <script>
+        const SECRET_CODE = "TERIYAADEIN";
+        
+        async function checkHealth() {
+            const healthResult = document.getElementById('healthResult');
+            healthResult.innerHTML = '<div class="loading"><div class="spinner"></div><p>Checking health...</p></div>';
+            
+            try {
+                const response = await fetch('/health');
+                const data = await response.json();
+                
+                healthResult.innerHTML = `
+                    <div style="background: rgba(74,222,128,0.2); padding: 1rem; border-radius: 10px; margin-top: 1rem;">
+                        <i class="fas fa-check-circle" style="color: #4ade80;"></i>
+                        <strong>Status: ${data.status}</strong><br>
+                        <small>Service: ${data.service}</small><br>
+                        <small>Timestamp: ${new Date(data.timestamp).toLocaleString()}</small>
+                    </div>
+                `;
+                document.getElementById('apiStatus').innerHTML = '<span style="color: #4ade80;">● Online</span>';
+                showMessage('✅ Health check passed!', 'success');
+            } catch (error) {
+                healthResult.innerHTML = `<div style="background: rgba(239,68,68,0.2); padding: 1rem;">❌ Health check failed</div>`;
+                document.getElementById('apiStatus').innerHTML = '<span style="color: #ef4444;">● Offline</span>';
+            }
+        }
+
+        async function fetchUsers() {
+            try {
+                const response = await fetch('/api/users');
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayUsers(data.data);
+                    document.getElementById('totalUsers').textContent = data.data.length;
+                    document.getElementById('userCountBadge').textContent = `(${data.data.length} users)`;
+                    document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+                }
+            } catch (error) {
+                console.error('Error fetching users:', error);
+            }
+        }
+
+        function displayUsers(users) {
+            const usersList = document.getElementById('usersList');
+            if (!users || users.length === 0) {
+                usersList.innerHTML = '<div style="text-align: center; padding: 2rem;">✨ No users found ✨</div>';
+                return;
+            }
+            usersList.innerHTML = users.map(user => `
+                <div class="user-card">
+                    <div class="user-info">
+                        <div class="user-name">👤 ${escapeHtml(user.name)}</div>
+                        <div class="user-email">📧 ${escapeHtml(user.email)}</div>
+                        <div class="user-id">🆔 ID: ${escapeHtml(user.id)}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function createUser() {
+            const name = document.getElementById('userName').value;
+            const email = document.getElementById('userEmail').value;
+            
+            if (!name || !email) {
+                showMessage('Please fill all fields', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/users', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email })
+                });
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showMessage(`✅ User "${name}" created!`, 'success');
+                    document.getElementById('userName').value = '';
+                    document.getElementById('userEmail').value = '';
+                    fetchUsers();
+                } else {
+                    showMessage(data.error || 'Failed to create user', 'error');
+                }
+            } catch (error) {
+                showMessage('Network error', 'error');
+            }
+        }
+
+        function unlockSong() {
+            const code = document.getElementById('secretCode').value.trim();
+            
+            if (code === SECRET_CODE) {
+                const playerDiv = document.getElementById('songPlayer');
+                const iframe = document.getElementById('videoFrame');
+                iframe.src = 'https://drive.google.com/file/d/12WJePAPTcE8LbW1_xVHsBdN7p9p1IFMn/preview';
+                playerDiv.style.display = 'block';
+                canvasConfetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+                showMessage('🎵 Correct! Enjoy the song! 🎵', 'success');
+                document.getElementById('secretCode').value = '';
+            } else {
+                showMessage('❌ Wrong code! Try again.', 'error');
+                const input = document.getElementById('secretCode');
+                input.style.animation = 'shake 0.3s ease-in-out';
+                setTimeout(() => input.style.animation = '', 300);
+            }
+        }
+
+        function showMessage(message, type) {
+            const alert = document.getElementById('alert');
+            alert.className = `alert ${type}`;
+            alert.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${message}`;
+            alert.style.display = 'block';
+            setTimeout(() => alert.style.display = 'none', 3000);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Initialize
+        fetchUsers();
+        checkHealth();
+        setInterval(fetchUsers, 5000);
+    </script>
+</body>
+</html>

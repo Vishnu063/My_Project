@@ -1,68 +1,109 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from typing import List
-import boto3
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+import sqlite3
 import os
-import uuid
-from datetime import datetime
 
-app = FastAPI()
+app = Flask(__name__)
+CORS(app)
 
-# DynamoDB setup
-dynamodb = boto3.resource('dynamodb')
-table_name = os.getenv('DYNAMODB_TABLE', 'users')
-table = dynamodb.Table(table_name)
+# Database setup
+DATABASE = '/data/users.db'
 
-class User(BaseModel):
-    id: str = None
-    name: str
-    email: str
-    created_at: str = None
+def get_db():
+    conn = sqlite3.connect(DATABASE)
+    conn.row_factory = sqlite3.Row
+    return conn
 
-@app.on_event("startup")
-async def create_table():
-    # Check if table exists, create if not (for development)
-    try:
-        dynamodb.meta.client.describe_table(TableName=table_name)
-    except dynamodb.meta.client.exceptions.ResourceNotFoundException:
-        table = dynamodb.create_table(
-            TableName=table_name,
-            KeySchema=[{'AttributeName': 'id', 'KeyType': 'HASH'}],
-            AttributeDefinitions=[{'AttributeName': 'id', 'AttributeType': 'S'}],
-            BillingMode='PAY_PER_REQUEST'
-        )
-        table.wait_until_exists()
-
-@app.get("/health")
-async def health_check():
-    return {"status": "healthy", "service": "user-service"}
-
-@app.get("/users", response_model=List[User])
-async def get_users():
-    try:
-        response = table.scan()
-        return response.get('Items', [])
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.post("/users", response_model=User)
-async def create_user(user: User):
-    try:
-        user_id = str(uuid.uuid4())
-        now = datetime.utcnow().isoformat()
+def init_db():
+    """Initialize database with users table"""
+    with app.app_context():
+        db = get_db()
+        db.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                email TEXT NOT NULL UNIQUE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+        db.commit()
         
-        item = {
-            'id': user_id,
-            'name': user.name,
-            'email': user.email,
-            'created_at': now
+        # Add some sample users if table is empty
+        cursor = db.execute('SELECT COUNT(*) as count FROM users')
+        count = cursor.fetchone()['count']
+        
+        if count == 0:
+            sample_users = [
+                ('Alice Johnson', 'alice@example.com'),
+                ('Bob Smith', 'bob@example.com'),
+                ('Carol Davis', 'carol@example.com')
+            ]
+            for name, email in sample_users:
+                try:
+                    db.execute('INSERT INTO users (name, email) VALUES (?, ?)', (name, email))
+                except:
+                    pass
+            db.commit()
+            print("✅ Sample users added to database")
+
+# Initialize database on startup
+init_db()
+
+@app.route('/health')
+def health():
+    return jsonify({
+        "status": "healthy",
+        "service": "user-service",
+        "database": "sqlite",
+        "storage": "/data/users.db"
+    })
+
+@app.route('/users', methods=['GET'])
+def get_users():
+    db = get_db()
+    users = db.execute('SELECT id, name, email FROM users ORDER BY id DESC').fetchall()
+    return jsonify([dict(user) for user in users])
+
+@app.route('/users', methods=['POST'])
+def create_user():
+    data = request.get_json()
+    name = data.get('name')
+    email = data.get('email')
+    
+    if not name or not email:
+        return jsonify({"error": "Name and email are required"}), 400
+    
+    db = get_db()
+    try:
+        cursor = db.execute('INSERT INTO users (name, email) VALUES (?, ?)', (name, email))
+        db.commit()
+        new_user = {
+            'id': cursor.lastrowid,
+            'name': name,
+            'email': email
         }
-        
-        table.put_item(Item=item)
-        return item
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        return jsonify(new_user), 201
+    except sqlite3.IntegrityError:
+        return jsonify({"error": "Email already exists"}), 409
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+@app.route('/users/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    db = get_db()
+    cursor = db.execute('DELETE FROM users WHERE id = ?', (user_id,))
+    db.commit()
+    if cursor.rowcount == 0:
+        return jsonify({"error": "User not found"}), 404
+    return jsonify({"message": "User deleted successfully"}), 200
+
+@app.route('/stats', methods=['GET'])
+def get_stats():
+    db = get_db()
+    total = db.execute('SELECT COUNT(*) as count FROM users').fetchone()['count']
+    return jsonify({
+        "total_users": total,
+        "database": "SQLite",
+        "storage_location": "/data/users.db"
+    })
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8000, debug=False)
