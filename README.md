@@ -4,7 +4,6 @@
 [![AWS](https://img.shields.io/badge/AWS-Free%20Tier-orange)](https://aws.amazon.com/free)
 [![Terraform](https://img.shields.io/badge/Terraform-1.5+-purple)](https://www.terraform.io/)
 [![Docker](https://img.shields.io/badge/Docker-20.10+-blue)](https://www.docker.com/)
-[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
 ## 📋 Project Overview
 
