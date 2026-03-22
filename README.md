@@ -1,23 +1,38 @@
 # 🚀 Automated CI/CD Pipeline with Infrastructure Provisioning using Terraform on AWS
 
-## Project Overview
-This project demonstrates a complete DevOps workflow with:
-- **Infrastructure as Code** using Terraform
-- **CI/CD pipeline** using GitHub Actions
-- **Containerized microservices** (Node.js, Python)
-- **Automated deployment** to AWS EC2
-- **Container Registry** using AWS ECR
+[![GitHub stars](https://img.shields.io/github/stars/Vishnu063/My_Project?style=social)](https://github.com/Vishnu063/My_Project)
+[![AWS](https://img.shields.io/badge/AWS-Free%20Tier-orange)](https://aws.amazon.com/free)
+[![Terraform](https://img.shields.io/badge/Terraform-1.5+-purple)](https://www.terraform.io/)
+[![Docker](https://img.shields.io/badge/Docker-20.10+-blue)](https://www.docker.com/)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+
+## 📋 Project Overview
+
+This project demonstrates a complete **DevOps workflow** with:
+
+- ✅ **Infrastructure as Code** using Terraform
+- ✅ **CI/CD pipeline** using GitHub Actions
+- ✅ **Containerized microservices** (Node.js, Python)
+- ✅ **Automated deployment** to AWS EC2
+- ✅ **Container Registry** using AWS ECR
+
+---
 
 ## 🎯 Project Status: **COMPLETED & DEPLOYED** ✅
 
-The infrastructure is fully deployed and running on AWS Free Tier with:
-- EC2 instance running Docker containers
-- API Gateway and User Service microservices
-- ECR repository for container images
-- VPC with public subnets and security groups
+The infrastructure is fully deployed and running on **AWS Free Tier** with:
 
-## Architecture
+| Component | Details |
+|-----------|---------|
+| 🖥️ **EC2 Instance** | Running Docker containers (t3.micro) |
+| 🔀 **API Gateway** | Node.js microservice |
+| 👤 **User Service** | Python FastAPI microservice |
+| 📦 **ECR Repository** | Container images stored |
+| 🌐 **VPC** | Isolated network with public subnets |
 
+---
+
+## 🏗️ Architecture
 ┌─────────────────────────────────────────────────────────────┐
 │ GitHub Actions CI/CD │
 │ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ │
@@ -42,7 +57,11 @@ The infrastructure is fully deployed and running on AWS Free Tier with:
 │ └────────────────────────────────────────────────────┘ │
 └─────────────────────────────────────────────────────────────┘
 
-## Technology Stack
+text
+
+---
+
+## 🛠️ Technology Stack
 
 | Category | Technologies |
 |----------|--------------|
@@ -51,35 +70,41 @@ The infrastructure is fully deployed and running on AWS Free Tier with:
 | **Backend** | Node.js, Python (FastAPI) |
 | **Container** | Docker, Docker Compose |
 | **Security** | IAM Least Privilege |
+| **Monitoring** | Health Checks, Logging |
 
-## Prerequisites
+---
 
-- AWS Account (Free Tier)
-- Terraform >= 1.0
-- Docker >= 20.10
-- GitHub Account
-- AWS CLI configured
+## 📋 Prerequisites
 
-## Quick Start
+- ☁️ AWS Account ([Free Tier](https://aws.amazon.com/free))
+- 🏗️ Terraform >= 1.0
+- 🐳 Docker >= 20.10
+- 🔗 GitHub Account
+- 🔑 AWS CLI configured
 
-1. Clone Repository
+---
+
+## 🚀 Quick Start
+
+### 1. Clone Repository
+
 ```bash
 git clone https://github.com/Vishnu063/My_Project.git
 cd My_Project
+2. Configure AWS Credentials
 
-2. Configure AWS credentials
+bash
 aws configure
 # Enter your AWS Access Key ID and Secret Access Key
 # Default region: us-east-1
-
-3. Deploy infrastructure with Terraform
+3. Deploy Infrastructure with Terraform
 
 bash
 cd terraform/environments/dev
 terraform init
 terraform plan
 terraform apply -auto-approve
-4. Build and push Docker images to ECR
+4. Build and Push Docker Images to ECR
 
 bash
 cd ../../../app
@@ -110,7 +135,7 @@ docker compose pull
 docker compose up -d
 curl localhost/health
 EOF
-6. Test the live API
+6. Test the Live API
 
 bash
 # Health check
