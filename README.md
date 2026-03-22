@@ -62,7 +62,7 @@ The infrastructure is fully deployed and running on AWS Free Tier with:
 
 ## Quick Start
 
-### 1. Clone Repository
+1. Clone Repository
 ```bash
 git clone https://github.com/Vishnu063/My_Project.git
 cd My_Project
