@@ -1,83 +1,29 @@
-# 🚀 Automated CI/CD Pipeline with Infrastructure Provisioning using Terraform on AWS
+# Container and Terraform Experiments
 
-[![GitHub stars](https://img.shields.io/github/stars/Vishnu063/My_Project?style=social)](https://github.com/Vishnu063/My_Project)
-[![AWS](https://img.shields.io/badge/AWS-Free%20Tier-orange)](https://aws.amazon.com/free)
-[![Terraform](https://img.shields.io/badge/Terraform-1.5+-purple)](https://www.terraform.io/)
-[![Docker](https://img.shields.io/badge/Docker-20.10+-blue)](https://www.docker.com/)
+A collection of application and infrastructure experiments, including a Node.js API gateway, Python user services, a Go product service, Docker Compose, and AWS Terraform configuration.
 
-## 📋 Project Overview
+[Reviewer walkthrough](INTERVIEW.md)
 
-This project demonstrates a complete **DevOps workflow** with:
+## Choose the correct source tree
 
-- ✅ **Infrastructure as Code** using Terraform
-- ✅ **CI/CD pipeline** using GitHub Actions
-- ✅ **Containerized microservices** (Node.js, Python)
-- ✅ **Automated deployment** to AWS EC2
-- ✅ **Container Registry** using AWS ECR
+| Path | Contents |
+| --- | --- |
+| [app](app) | API gateway, user/product services, and nested Compose stack |
+| [docker-compose.yml](docker-compose.yml) | Separate root Compose configuration |
+| [flask-user](flask-user) | Standalone Python service experiment |
+| [terraform](terraform) | Root, module, environment, and remote-state material |
 
----
+There are multiple entry points. Inspect the specific Compose file and Terraform root before running commands; do not assume they describe one finished deployment.
 
-## 🎯 Project Status: **COMPLETED & DEPLOYED** ✅
+## Review without provisioning
 
-The infrastructure is fully deployed and running on **AWS Free Tier** with:
+```bash
+git clone https://github.com/Vishnu063/My_Project.git
+cd My_Project
+docker compose -f docker-compose.yml config --quiet
+docker compose -f app/docker-compose.yml config --quiet
+```
 
-| Component | Details |
-|-----------|---------|
-| 🖥️ **EC2 Instance** | Running Docker containers (t3.micro) |
-| 🔀 **API Gateway** | Node.js microservice |
-| 👤 **User Service** | Python FastAPI microservice |
-| 📦 **ECR Repository** | Container images stored |
-| 🌐 **VPC** | Isolated network with public subnets |
+Configuration checks need Docker Compose and may require local environment values. They do not start services or prove runtime health, and were not executed in this portfolio pass.
 
----
-
-## 🏗️ Architecture
-┌─────────────────────────────────────────────────────────────┐
-│ GitHub Actions CI/CD │
-│ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ │
-│ │ Test │→│ Scan │→│ Build │→│ Push │ │
-│ └──────────┘ └──────────┘ └──────────┘ └──────────┘ │
-└─────────────────────────────────────────────────────────────┘
-↓
-┌─────────────────────────────────────────────────────────────┐
-│ AWS Cloud │
-│ ┌────────────────────────────────────────────────────┐ │
-│ │ Terraform Provisioned Infrastructure │ │
-│ │ • VPC with Public Subnets (10.0.1.0/24) │ │
-│ │ • EC2 (t3.micro) with Docker │ │
-│ │ • ECR Container Registry │ │
-│ │ • IAM Roles (Least Privilege) │ │
-│ └────────────────────────────────────────────────────┘ │
-│ ↓ │
-│ ┌────────────────────────────────────────────────────┐ │
-│ │ Microservices (Docker Compose) │ │
-│ │ • API Gateway (Node.js) - Port 80 │ │
-│ │ • User Service (Python) - Port 8000 │ │
-│ └────────────────────────────────────────────────────┘ │
-└─────────────────────────────────────────────────────────────┘
-
-text
-
----
-
-## 🛠️ Technology Stack
-
-| Category | Technologies |
-|----------|--------------|
-| **Infrastructure** | Terraform, AWS (VPC, EC2, ECR, IAM) |
-| **CI/CD** | GitHub Actions, Docker |
-| **Backend** | Node.js, Python (FastAPI) |
-| **Container** | Docker, Docker Compose |
-| **Security** | IAM Least Privilege |
-| **Monitoring** | Health Checks, Logging |
-
----
-
-## 📋 Prerequisites
-
-- ☁️ AWS Account ([Free Tier](https://aws.amazon.com/free))
-- 🏗️ Terraform >= 1.0
-- 🐳 Docker >= 20.10
-- 🔗 GitHub Account
-- 🔑 AWS CLI configured
-
+The earlier README described a completed live deployment and free-tier operation. This source review does not establish either. Before using this as a primary interview demo, select one stack, verify it end to end, and document the exact commands and observed results. Review tracked Terraform plan/backup artifacts for environment-specific information; never commit state or private credentials.
